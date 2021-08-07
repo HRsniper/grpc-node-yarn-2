@@ -1,0 +1,25 @@
+{
+  "name": "grpc-node-yarn-2",
+  "packageManager": "yarn@3.0.0",
+  "devDependencies": {
+    "@types/google-protobuf": "^3.15.3",
+    "@types/node": "^16.4.13",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.3.6",
+    "@grpc/proto-loader": "^0.6.4",
+    "google-protobuf": "^3.17.3",
+    "grpc-tools": "^1.11.2",
+    "grpc_tools_node_protoc_ts": "^5.3.1"
+  },
+  "scripts": {
+    "dev": "npm run build && npm run start",
+    "start": "node src/server.js",
+    "build": "tsc",
+    "compile:js": "protoc --proto_path=src/proto src/proto/*.proto --js_out=import_style=commonjs,binary:src/pb",
+    "compile:grpc": "grpc_tools_node_protoc --proto_path=src/proto src/proto/*.proto --grpc_out=grpc_js:src/pb",
+    "compile:ts": "grpc_tools_node_protoc --proto_path=src/proto src/proto/*.proto --ts_out=grpc_js:src/pb",
+    "compile": "npm run compile:js && npm run compile:grpc && npm run compile:ts"
+  }
+}
