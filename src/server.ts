@@ -1,6 +1,8 @@
 import { sendUnaryData, Server, ServerCredentials, ServerUnaryCall } from "@grpc/grpc-js";
 import { Empty } from "google-protobuf/google/protobuf/empty_pb";
 import { promisify } from "util";
+import { IUsersServiceServer, UsersServiceService } from "./pb/users_grpc_pb";
+import { ListUsersResponse } from "./pb/users_pb";
 import { IUserServiceServer, UserServiceService } from "./pb/user_grpc_pb";
 import {
   CreateUserRequest,
@@ -139,8 +141,26 @@ const UserServer = (): IUserServiceServer => {
   };
 };
 
+const UsersServer = (): IUsersServiceServer => {
+  const listUsers = (_call: ServerUnaryCall<Empty, ListUsersResponse>, callback: sendUnaryData<ListUsersResponse>) => {
+    const response = new ListUsersResponse();
+
+    users.forEach((note) => {
+      response.addUsers(new User().setId(note.id).setName(note.name).setEmail(note.email));
+    });
+    console.table(users);
+
+    return callback(null, response);
+  };
+
+  return {
+    listUsers
+  };
+};
+
 const server = new Server();
 server.addService(UserServiceService, UserServer());
+server.addService(UsersServiceService, UsersServer());
 
 // utilizamos o .bind(server) porque o método start() possui uma checagem
 // para saber se o servidor já foi inicializado chamando this.started = true/false

@@ -1,18 +1,21 @@
 import { ChannelCredentials } from "@grpc/grpc-js";
+import { Empty } from "google-protobuf/google/protobuf/empty_pb";
+import { UsersServiceClient } from "./pb/users_grpc_pb";
 import { UserServiceClient } from "./pb/user_grpc_pb";
 import { CreateUserRequest, DeleteUserRequest, GetUserRequest, UpdateUserRequest } from "./pb/user_pb";
 
-const client = new UserServiceClient("127.0.0.1:50051", ChannelCredentials.createInsecure());
+const clientUser = new UserServiceClient("127.0.0.1:50051", ChannelCredentials.createInsecure());
+const clientUsers = new UsersServiceClient("127.0.0.1:50051", ChannelCredentials.createInsecure());
 
-client.getUser(new GetUserRequest().setId(1), (_, response) => {
+clientUser.getUser(new GetUserRequest().setId(1), (_err, response) => {
   console.log("GET", response.toObject());
 });
 
-client.createUser(new CreateUserRequest().setEmail("email@email1.com").setName("hercules1"), (_, response) => {
+clientUser.createUser(new CreateUserRequest().setEmail("email@email1.com").setName("hercules1"), (_, response) => {
   console.log("CREATE", response.toObject());
 });
 
-client.updateUser(
+clientUser.updateUser(
   new UpdateUserRequest()
     .setOldemail("email@email1.com")
     .setNewemail("email@email.com.br")
@@ -23,6 +26,10 @@ client.updateUser(
   }
 );
 
-client.deleteUser(new DeleteUserRequest().setId(1), (_, response) => {
+clientUser.deleteUser(new DeleteUserRequest().setId(1), (_, response) => {
   console.log("DELETE", response.toObject());
+});
+
+clientUsers.listUsers(new Empty(), (_err, response) => {
+  console.log("LIST USERS", response.toObject());
 });

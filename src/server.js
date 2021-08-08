@@ -3,6 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var grpc_js_1 = require("@grpc/grpc-js");
 var empty_pb_1 = require("google-protobuf/google/protobuf/empty_pb");
 var util_1 = require("util");
+var users_grpc_pb_1 = require("./pb/users_grpc_pb");
+var users_pb_1 = require("./pb/users_pb");
 var user_grpc_pb_1 = require("./pb/user_grpc_pb");
 var user_pb_1 = require("./pb/user_pb");
 var users = [
@@ -94,8 +96,22 @@ var UserServer = function () {
         deleteUser: deleteUser
     };
 };
+var UsersServer = function () {
+    var listUsers = function (_call, callback) {
+        var response = new users_pb_1.ListUsersResponse();
+        users.forEach(function (note) {
+            response.addUsers(new user_pb_1.User().setId(note.id).setName(note.name).setEmail(note.email));
+        });
+        console.table(users);
+        return callback(null, response);
+    };
+    return {
+        listUsers: listUsers
+    };
+};
 var server = new grpc_js_1.Server();
 server.addService(user_grpc_pb_1.UserServiceService, UserServer());
+server.addService(users_grpc_pb_1.UsersServiceService, UsersServer());
 // utilizamos o .bind(server) porque o método start() possui uma checagem
 // para saber se o servidor já foi inicializado chamando this.started = true/false
 var serverBindPromise = util_1.promisify(server.bindAsync).bind(server);
