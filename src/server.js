@@ -41,8 +41,28 @@ var UserServer = function () {
         console.table(users);
         return callback(null, response);
     };
-    var updateUser = function (updateUser, callback) {
-        return new user_pb_1.User();
+    var updateUser = function (call, callback) {
+        var oldEmail = call.request.getOldemail();
+        var oldName = call.request.getOldname();
+        var newEmail = call.request.getNewemail();
+        var newName = call.request.getNewname();
+        console.log({ oldEmail: oldEmail, newEmail: newEmail, oldName: oldName, newName: newName });
+        if (!oldEmail || !oldName) {
+            return callback(new Error("User can't by update"), null);
+        }
+        var foundUser = users.find(function (user) { return user.email === oldEmail; });
+        // console.table(foundUser);
+        if (!foundUser) {
+            return callback(new Error("User not found"), null);
+        }
+        var response = new user_pb_1.UpdateUserResponse();
+        response.setUser(new user_pb_1.User()
+            .setId(foundUser.id)
+            .setName(newName ? newName : oldName)
+            .setEmail(newEmail ? newEmail : oldEmail));
+        users.push({ id: foundUser.id, email: newEmail ? newEmail : oldEmail, name: newName ? newName : oldName });
+        console.table(users);
+        return callback(null, response);
     };
     var deleteUser = function (deleteUser, callback) {
         return new empty_pb_1.Empty();

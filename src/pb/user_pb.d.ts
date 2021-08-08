@@ -123,11 +123,23 @@ export namespace CreateUserResponse {
 }
 
 export class UpdateUserRequest extends jspb.Message { 
+    getOldemail(): string;
+    setOldemail(value: string): UpdateUserRequest;
 
-    hasUser(): boolean;
-    clearUser(): void;
-    getUser(): User | undefined;
-    setUser(value?: User): UpdateUserRequest;
+    hasNewemail(): boolean;
+    clearNewemail(): void;
+    getNewemail(): string | undefined;
+    setNewemail(value: string): UpdateUserRequest;
+
+    hasOldname(): boolean;
+    clearOldname(): void;
+    getOldname(): string | undefined;
+    setOldname(value: string): UpdateUserRequest;
+
+    hasNewname(): boolean;
+    clearNewname(): void;
+    getNewname(): string | undefined;
+    setNewname(value: string): UpdateUserRequest;
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): UpdateUserRequest.AsObject;
@@ -141,7 +153,10 @@ export class UpdateUserRequest extends jspb.Message {
 
 export namespace UpdateUserRequest {
     export type AsObject = {
-        user?: User.AsObject,
+        oldemail: string,
+        newemail?: string,
+        oldname?: string,
+        newname?: string,
     }
 }
 

@@ -1007,7 +1007,10 @@ proto.UpdateUserRequest.prototype.toObject = function(opt_includeInstance) {
  */
 proto.UpdateUserRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    user: (f = msg.getUser()) && proto.User.toObject(includeInstance, f)
+    oldemail: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    newemail: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    oldname: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    newname: jspb.Message.getFieldWithDefault(msg, 4, "")
   };
 
   if (includeInstance) {
@@ -1045,9 +1048,20 @@ proto.UpdateUserRequest.deserializeBinaryFromReader = function(msg, reader) {
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = new proto.User;
-      reader.readMessage(value,proto.User.deserializeBinaryFromReader);
-      msg.setUser(value);
+      var value = /** @type {string} */ (reader.readString());
+      msg.setOldemail(value);
+      break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setNewemail(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setOldname(value);
+      break;
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setNewname(value);
       break;
     default:
       reader.skipField();
@@ -1078,42 +1092,79 @@ proto.UpdateUserRequest.prototype.serializeBinary = function() {
  */
 proto.UpdateUserRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getUser();
-  if (f != null) {
-    writer.writeMessage(
+  f = message.getOldemail();
+  if (f.length > 0) {
+    writer.writeString(
       1,
-      f,
-      proto.User.serializeBinaryToWriter
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 2));
+  if (f != null) {
+    writer.writeString(
+      2,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 3));
+  if (f != null) {
+    writer.writeString(
+      3,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 4));
+  if (f != null) {
+    writer.writeString(
+      4,
+      f
     );
   }
 };
 
 
 /**
- * optional User user = 1;
- * @return {?proto.User}
+ * optional string oldEmail = 1;
+ * @return {string}
  */
-proto.UpdateUserRequest.prototype.getUser = function() {
-  return /** @type{?proto.User} */ (
-    jspb.Message.getWrapperField(this, proto.User, 1));
+proto.UpdateUserRequest.prototype.getOldemail = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
 /**
- * @param {?proto.User|undefined} value
+ * @param {string} value
  * @return {!proto.UpdateUserRequest} returns this
-*/
-proto.UpdateUserRequest.prototype.setUser = function(value) {
-  return jspb.Message.setWrapperField(this, 1, value);
+ */
+proto.UpdateUserRequest.prototype.setOldemail = function(value) {
+  return jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
 /**
- * Clears the message field making it undefined.
+ * optional string newEmail = 2;
+ * @return {string}
+ */
+proto.UpdateUserRequest.prototype.getNewemail = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/**
+ * @param {string} value
  * @return {!proto.UpdateUserRequest} returns this
  */
-proto.UpdateUserRequest.prototype.clearUser = function() {
-  return this.setUser(undefined);
+proto.UpdateUserRequest.prototype.setNewemail = function(value) {
+  return jspb.Message.setField(this, 2, value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.UpdateUserRequest} returns this
+ */
+proto.UpdateUserRequest.prototype.clearNewemail = function() {
+  return jspb.Message.setField(this, 2, undefined);
 };
 
 
@@ -1121,8 +1172,80 @@ proto.UpdateUserRequest.prototype.clearUser = function() {
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.UpdateUserRequest.prototype.hasUser = function() {
-  return jspb.Message.getField(this, 1) != null;
+proto.UpdateUserRequest.prototype.hasNewemail = function() {
+  return jspb.Message.getField(this, 2) != null;
+};
+
+
+/**
+ * optional string oldName = 3;
+ * @return {string}
+ */
+proto.UpdateUserRequest.prototype.getOldname = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.UpdateUserRequest} returns this
+ */
+proto.UpdateUserRequest.prototype.setOldname = function(value) {
+  return jspb.Message.setField(this, 3, value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.UpdateUserRequest} returns this
+ */
+proto.UpdateUserRequest.prototype.clearOldname = function() {
+  return jspb.Message.setField(this, 3, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.UpdateUserRequest.prototype.hasOldname = function() {
+  return jspb.Message.getField(this, 3) != null;
+};
+
+
+/**
+ * optional string newName = 4;
+ * @return {string}
+ */
+proto.UpdateUserRequest.prototype.getNewname = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.UpdateUserRequest} returns this
+ */
+proto.UpdateUserRequest.prototype.setNewname = function(value) {
+  return jspb.Message.setField(this, 4, value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.UpdateUserRequest} returns this
+ */
+proto.UpdateUserRequest.prototype.clearNewname = function() {
+  return jspb.Message.setField(this, 4, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.UpdateUserRequest.prototype.hasNewname = function() {
+  return jspb.Message.getField(this, 4) != null;
 };
 
 

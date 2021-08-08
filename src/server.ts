@@ -68,10 +68,37 @@ const UserServer = (): IUserServiceServer => {
   };
 
   const updateUser = (
-    updateUser: ServerUnaryCall<UpdateUserRequest, UpdateUserResponse>,
+    call: ServerUnaryCall<UpdateUserRequest, UpdateUserResponse>,
     callback: sendUnaryData<UpdateUserResponse>
   ) => {
-    return new User();
+    const oldEmail = call.request.getOldemail();
+    const oldName = call.request.getOldname();
+    const newEmail = call.request.getNewemail();
+    const newName = call.request.getNewname();
+    console.log({ oldEmail, newEmail, oldName, newName });
+
+    if (!oldEmail || !oldName) {
+      return callback(new Error("User can't by update"), null);
+    }
+
+    const foundUser = users.find((user) => user.email === oldEmail);
+    // console.table(foundUser);
+
+    if (!foundUser) {
+      return callback(new Error("User not found"), null);
+    }
+
+    const response = new UpdateUserResponse();
+    response.setUser(
+      new User()
+        .setId(foundUser.id)
+        .setName(newName ? newName : oldName)
+        .setEmail(newEmail ? newEmail : oldEmail)
+    );
+
+    console.table(users);
+
+    return callback(null, response);
   };
 
   const deleteUser = (deleteUser: ServerUnaryCall<DeleteUserRequest, User>, callback: sendUnaryData<Empty>) => {
