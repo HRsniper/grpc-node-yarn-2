@@ -62,6 +62,7 @@ var UserServer = function () {
             .setEmail(newEmail ? newEmail : oldEmail));
         users.map(function (user) {
             if (user.email === oldEmail) {
+                user.id = foundUser.id;
                 user.email = newEmail ? newEmail : oldEmail;
                 user.name = newName ? newName : oldName;
             }
