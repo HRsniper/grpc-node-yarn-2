@@ -8,44 +8,36 @@ var user_pb_1 = require("./pb/user_pb");
 var users = [
     { id: 1, name: "Nome 1", email: "Email 1" },
     { id: 2, name: "Nome 2", email: "Email 2" },
-    { id: 3, name: "Nome 3", email: "Email 3" },
+    { id: 3, name: "Nome 3", email: "Email 3" }
 ];
 var UserServer = function () {
     var getUser = function (call, callback) {
         var id = call.request.getId();
+        // console.log({ id });
         var foundUser = users.find(function (user) { return user.id === id; });
+        console.table(foundUser);
         if (!foundUser) {
             return callback(new Error("User not found"), null);
         }
         var response = new user_pb_1.GetUserResponse();
-        response.setUser(new user_pb_1.User()
-            .setId(foundUser.id)
-            .setName(foundUser.name)
-            .setEmail(foundUser.email));
+        response.setUser(new user_pb_1.User().setId(foundUser.id).setName(foundUser.name).setEmail(foundUser.email));
         return callback(null, response);
     };
     var createUser = function (call, callback) {
         var id = users.length + 1;
         var email = call.request.getEmail();
         var name = call.request.getName();
-        console.log({ email: email, name: name });
-        // if (newUser?.getEmail() === undefined) {
-        //   return callback(new Error("User can't by created"), null);
-        // }
+        // console.log({ email, name });
+        if (!email || !name) {
+            return callback(new Error("User can't by created"), null);
+        }
         var userExists = users.find(function (user) { return user.email === email; });
         if (userExists) {
             return callback(new Error("User already exists"), null);
         }
         var response = new user_pb_1.CreateUserResponse();
-        response.setUser(new user_pb_1.User()
-            .setId(id)
-            .setName(name || "")
-            .setEmail(email || ""));
-        users.push({
-            id: id,
-            name: name || "",
-            email: email || "",
-        });
+        response.setUser(new user_pb_1.User().setId(id).setName(name).setEmail(email));
+        users.push({ id: id, name: name, email: email });
         console.table(users);
         return callback(null, response);
     };
@@ -59,7 +51,7 @@ var UserServer = function () {
         getUser: getUser,
         createUser: createUser,
         updateUser: updateUser,
-        deleteUser: deleteUser,
+        deleteUser: deleteUser
     };
 };
 var server = new grpc_js_1.Server();
@@ -70,9 +62,7 @@ var serverBindPromise = util_1.promisify(server.bindAsync).bind(server);
 serverBindPromise("127.0.0.1:50051", grpc_js_1.ServerCredentials.createInsecure())
     .then(function (port) {
     server.start();
-    console.log("\x1b[0;31mServer started\x1b[0m, listening on \x1b[0;32m" +
-        port +
-        "\x1b[0m");
+    console.log("\x1b[0;31mServer started\x1b[0m, listening on \x1b[0;32m" + port + "\x1b[0m");
 })
     .catch(function (error) {
     console.error("\x1b[0;31mServer error\x1b[0m: " + error.message);

@@ -1,28 +1,22 @@
-import {
-  handleUnaryCall,
-  sendUnaryData,
-  Server,
-  ServerCredentials,
-  ServerUnaryCall,
-} from "@grpc/grpc-js";
+import { sendUnaryData, Server, ServerCredentials, ServerUnaryCall } from "@grpc/grpc-js";
 import { Empty } from "google-protobuf/google/protobuf/empty_pb";
 import { promisify } from "util";
 import { IUserServiceServer, UserServiceService } from "./pb/user_grpc_pb";
 import {
   CreateUserRequest,
+  CreateUserResponse,
   DeleteUserRequest,
   GetUserRequest,
-  UpdateUserRequest,
-  User,
-  CreateUserResponse,
   GetUserResponse,
+  UpdateUserRequest,
   UpdateUserResponse,
+  User
 } from "./pb/user_pb";
 
 const users: User.AsObject[] = [
   { id: 1, name: "Nome 1", email: "Email 1" },
   { id: 2, name: "Nome 2", email: "Email 2" },
-  { id: 3, name: "Nome 3", email: "Email 3" },
+  { id: 3, name: "Nome 3", email: "Email 3" }
 ];
 
 const UserServer = (): IUserServiceServer => {
@@ -34,19 +28,14 @@ const UserServer = (): IUserServiceServer => {
     // console.log({ id });
 
     const foundUser = users.find((user) => user.id === id);
-    // console.log({ foundUser });
+    console.table(foundUser);
 
     if (!foundUser) {
       return callback(new Error("User not found"), null);
     }
 
     const response = new GetUserResponse();
-    response.setUser(
-      new User()
-        .setId(foundUser.id)
-        .setName(foundUser.name)
-        .setEmail(foundUser.email)
-    );
+    response.setUser(new User().setId(foundUser.id).setName(foundUser.name).setEmail(foundUser.email));
 
     return callback(null, response);
   };
@@ -70,19 +59,9 @@ const UserServer = (): IUserServiceServer => {
     }
 
     const response = new CreateUserResponse();
-    response.setUser(
-      new User()
-        .setId(id)
-        .setName(name || "")
-        .setEmail(email || "")
-    );
+    response.setUser(new User().setId(id).setName(name).setEmail(email));
 
-    users.push({
-      id,
-      name: name || "",
-      email: email || "",
-    });
-
+    users.push({ id, name, email });
     console.table(users);
 
     return callback(null, response);
@@ -95,10 +74,7 @@ const UserServer = (): IUserServiceServer => {
     return new User();
   };
 
-  const deleteUser = (
-    deleteUser: ServerUnaryCall<DeleteUserRequest, User>,
-    callback: sendUnaryData<Empty>
-  ) => {
+  const deleteUser = (deleteUser: ServerUnaryCall<DeleteUserRequest, User>, callback: sendUnaryData<Empty>) => {
     return new Empty();
   };
 
@@ -106,7 +82,7 @@ const UserServer = (): IUserServiceServer => {
     getUser,
     createUser,
     updateUser,
-    deleteUser,
+    deleteUser
   };
 };
 
@@ -119,11 +95,7 @@ const serverBindPromise = promisify(server.bindAsync).bind(server);
 serverBindPromise("127.0.0.1:50051", ServerCredentials.createInsecure())
   .then((port) => {
     server.start();
-    console.log(
-      "\x1b[0;31mServer started\x1b[0m, listening on \x1b[0;32m" +
-        port +
-        "\x1b[0m"
-    );
+    console.log("\x1b[0;31mServer started\x1b[0m, listening on \x1b[0;32m" + port + "\x1b[0m");
   })
   .catch((error) => {
     console.error("\x1b[0;31mServer error\x1b[0m: " + error.message);
