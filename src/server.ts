@@ -98,6 +98,7 @@ const UserServer = (): IUserServiceServer => {
 
     users.map((user) => {
       if (user.email === oldEmail) {
+        user.id = foundUser.id;
         user.email = newEmail ? newEmail : oldEmail;
         user.name = newName ? newName : oldName;
       }
