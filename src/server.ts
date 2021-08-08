@@ -75,7 +75,7 @@ const UserServer = (): IUserServiceServer => {
     const oldName = call.request.getOldname();
     const newEmail = call.request.getNewemail();
     const newName = call.request.getNewname();
-    console.log({ oldEmail, newEmail, oldName, newName });
+    // console.log({ oldEmail, newEmail, oldName, newName });
 
     if (!oldEmail || !oldName) {
       return callback(new Error("User can't by update"), null);
@@ -96,13 +96,38 @@ const UserServer = (): IUserServiceServer => {
         .setEmail(newEmail ? newEmail : oldEmail)
     );
 
+    users.map((user) => {
+      if (user.email === oldEmail) {
+        user.email = newEmail ? newEmail : oldEmail;
+        user.name = newName ? newName : oldName;
+      }
+    });
     console.table(users);
 
     return callback(null, response);
   };
 
-  const deleteUser = (deleteUser: ServerUnaryCall<DeleteUserRequest, User>, callback: sendUnaryData<Empty>) => {
-    return new Empty();
+  const deleteUser = (call: ServerUnaryCall<DeleteUserRequest, DeleteUserRequest>, callback: sendUnaryData<Empty>) => {
+    const id = call.request.getId();
+    // console.log({ id });
+
+    const foundUser = users.find((user) => user.id === id);
+    console.table(foundUser);
+
+    if (!foundUser) {
+      return callback(new Error("User not found"), null);
+    }
+
+    const response = new Empty();
+
+    users.map((user) => {
+      if (user.id === id) {
+        users.splice(users.indexOf(user), 1);
+      }
+    });
+    console.table(users);
+
+    return callback(null, response);
   };
 
   return {

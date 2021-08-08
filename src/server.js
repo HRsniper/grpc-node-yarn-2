@@ -46,7 +46,7 @@ var UserServer = function () {
         var oldName = call.request.getOldname();
         var newEmail = call.request.getNewemail();
         var newName = call.request.getNewname();
-        console.log({ oldEmail: oldEmail, newEmail: newEmail, oldName: oldName, newName: newName });
+        // console.log({ oldEmail, newEmail, oldName, newName });
         if (!oldEmail || !oldName) {
             return callback(new Error("User can't by update"), null);
         }
@@ -60,12 +60,31 @@ var UserServer = function () {
             .setId(foundUser.id)
             .setName(newName ? newName : oldName)
             .setEmail(newEmail ? newEmail : oldEmail));
-        users.push({ id: foundUser.id, email: newEmail ? newEmail : oldEmail, name: newName ? newName : oldName });
+        users.map(function (user) {
+            if (user.email === oldEmail) {
+                user.email = newEmail ? newEmail : oldEmail;
+                user.name = newName ? newName : oldName;
+            }
+        });
         console.table(users);
         return callback(null, response);
     };
-    var deleteUser = function (deleteUser, callback) {
-        return new empty_pb_1.Empty();
+    var deleteUser = function (call, callback) {
+        var id = call.request.getId();
+        // console.log({ id });
+        var foundUser = users.find(function (user) { return user.id === id; });
+        console.table(foundUser);
+        if (!foundUser) {
+            return callback(new Error("User not found"), null);
+        }
+        var response = new empty_pb_1.Empty();
+        users.map(function (user) {
+            if (user.id === id) {
+                users.splice(users.indexOf(user), 1);
+            }
+        });
+        console.table(users);
+        return callback(null, response);
     };
     return {
         getUser: getUser,
