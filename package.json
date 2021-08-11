@@ -17,6 +17,7 @@
     "google-protobuf": "^3.17.3"
   },
   "scripts": {
+    "gen-cert": "gen-cert",
     "dev": "yarn build && yarn start",
     "start": "yarn node src/server.js",
     "client": "yarn node src/client.js",

@@ -1,11 +1,17 @@
 import { ChannelCredentials } from "@grpc/grpc-js";
 import { Empty } from "google-protobuf/google/protobuf/empty_pb";
+import fs from "fs";
 import { UsersServiceClient } from "./pb/users_grpc_pb";
 import { UserServiceClient } from "./pb/user_grpc_pb";
 import { CreateUserRequest, DeleteUserRequest, GetUserRequest, UpdateUserRequest } from "./pb/user_pb";
 
-const clientUser = new UserServiceClient("127.0.0.1:50051", ChannelCredentials.createInsecure());
-const clientUsers = new UsersServiceClient("127.0.0.1:50051", ChannelCredentials.createInsecure());
+const rootCerts = fs.readFileSync("./certs/ca.crt");
+const cert_chain = fs.readFileSync("./certs/client.crt");
+const private_key = fs.readFileSync("./certs/client.key");
+const ssl = ChannelCredentials.createSsl(rootCerts, private_key, cert_chain);
+
+const clientUser = new UserServiceClient("localhost:50051", ssl);
+const clientUsers = new UsersServiceClient("localhost:50051", ssl);
 
 clientUser.getUser(new GetUserRequest().setId(1), (_err, response) => {
   console.log("GET", response.toObject());

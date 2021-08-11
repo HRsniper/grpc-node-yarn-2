@@ -1,7 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var grpc_js_1 = require("@grpc/grpc-js");
 var empty_pb_1 = require("google-protobuf/google/protobuf/empty_pb");
+var fs_1 = __importDefault(require("fs"));
 var util_1 = require("util");
 var users_grpc_pb_1 = require("./pb/users_grpc_pb");
 var users_pb_1 = require("./pb/users_pb");
@@ -112,10 +116,14 @@ var UsersServer = function () {
 var server = new grpc_js_1.Server();
 server.addService(user_grpc_pb_1.UserServiceService, UserServer());
 server.addService(users_grpc_pb_1.UsersServiceService, UsersServer());
+var rootCerts = fs_1.default.readFileSync("./certs/ca.crt");
+var cert_chain = fs_1.default.readFileSync("./certs/server.crt");
+var private_key = fs_1.default.readFileSync("./certs/server.key");
+var ssl = grpc_js_1.ServerCredentials.createSsl(rootCerts, [{ private_key: private_key, cert_chain: cert_chain }]);
 // utilizamos o .bind(server) porque o método start() possui uma checagem
 // para saber se o servidor já foi inicializado chamando this.started = true/false
 var serverBindPromise = util_1.promisify(server.bindAsync).bind(server);
-serverBindPromise("127.0.0.1:50051", grpc_js_1.ServerCredentials.createInsecure())
+serverBindPromise("localhost:50051", ssl)
     .then(function (port) {
     server.start();
     console.log("\x1b[0;31mServer started\x1b[0m, listening on \x1b[0;32m" + port + "\x1b[0m");

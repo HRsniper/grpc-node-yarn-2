@@ -1,5 +1,7 @@
 import { sendUnaryData, Server, ServerCredentials, ServerUnaryCall } from "@grpc/grpc-js";
 import { Empty } from "google-protobuf/google/protobuf/empty_pb";
+import path from "path";
+import fs from "fs";
 import { promisify } from "util";
 import { IUsersServiceServer, UsersServiceService } from "./pb/users_grpc_pb";
 import { ListUsersResponse } from "./pb/users_pb";
@@ -162,10 +164,15 @@ const server = new Server();
 server.addService(UserServiceService, UserServer());
 server.addService(UsersServiceService, UsersServer());
 
+const rootCerts = fs.readFileSync("./certs/ca.crt");
+const cert_chain = fs.readFileSync("./certs/server.crt");
+const private_key = fs.readFileSync("./certs/server.key");
+const ssl = ServerCredentials.createSsl(rootCerts, [{ private_key, cert_chain }]);
+
 // utilizamos o .bind(server) porque o método start() possui uma checagem
 // para saber se o servidor já foi inicializado chamando this.started = true/false
 const serverBindPromise = promisify(server.bindAsync).bind(server);
-serverBindPromise("127.0.0.1:50051", ServerCredentials.createInsecure())
+serverBindPromise("localhost:50051", ssl)
   .then((port) => {
     server.start();
     console.log("\x1b[0;31mServer started\x1b[0m, listening on \x1b[0;32m" + port + "\x1b[0m");
