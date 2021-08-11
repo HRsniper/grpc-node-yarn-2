@@ -37,3 +37,9 @@ The `Insomnia.json` file contains the **gRPC**/_HTTP2_ requests for [_Insomnia_]
 Click `Create ▼`, and in `IMPORT FROM`, click `File`, select the `Insomnia.json` path, click on it, and click `Import`.
 
 A `Collection` will be created with the name _gRPC_, click on it and it will open all the requests that are in the `Insomnia.json` file.
+
+<br />
+
+# _SSL_/_TLS_
+
+Na branch `ssl-tls` temos a implementação de _ssl_/_tls_ para o protocolo `https`.
